@@ -33,7 +33,8 @@ Click on sample data to load a test Sudoku problem
 
 Click on the solve button to run the program
 
-<img width="377" alt="Screen Shot 2022-05-01 at 4 54 17 PM" src="https://user-images.githubusercontent.com/1763107/166151493-4d5260d1-ff70-4496-a6c7-7c647f37e121.png">
-...
-<img width="306" alt="Screen Shot 2022-05-01 at 4 54 22 PM" src="https://user-images.githubusercontent.com/1763107/166151498-74841ddd-e84d-4d82-be40-703616f37289.png">
+<img width="360" alt="Screen Shot 2022-05-01 at 4 57 54 PM" src="https://user-images.githubusercontent.com/1763107/166151602-592dbab3-5e01-4b99-b5c4-66cbd7a85eb8.png">
 
+...
+
+<img width="302" alt="Screen Shot 2022-05-01 at 4 57 14 PM" src="https://user-images.githubusercontent.com/1763107/166151578-92fcc868-5600-45d1-abdc-aee5cdcf269a.png">
