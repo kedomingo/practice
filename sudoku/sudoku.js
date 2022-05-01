@@ -1,10 +1,12 @@
 function solve() {
     var inputMatrix = readMatrix();
     var penciledIn = pencilIn(inputMatrix);
-    document.body.innerHTML += "<hr />" + renderMatrix(penciledIn);
+    var solution = "<hr /><h3>Initial Possible Values</h3>" + renderMatrix(penciledIn);
+    var i = 1;
     while ((solved = findSolution(penciledIn)) !== false) {
-        document.body.innerHTML += "<hr />" + renderMatrix(solved);
+        solution += "<hr /><h3>Iteration " + i++ + "</h3>" + renderMatrix(solved);
     }
+    document.body.innerHTML += solution;
     writeMatrix(inputMatrix);
 }
 
@@ -15,6 +17,11 @@ function findSolution(matrix) {
                 continue;
             }
             for (v in matrix[i][j]['possibleValues']) {
+
+                if (Object.keys(matrix[i][j]['possibleValues']).length === 1) {
+                    console.log("Found " + v + " at " + i + ", " + j);
+                    return setSolution(matrix, i, j, v);
+                }
                 // If a possible value is unique in a group, a row, or a column, then that is the solution.
                 if (!inGroup(matrix, i, j, v, true)
                     || !isInRow(matrix, i, j, v, true)
@@ -161,25 +168,30 @@ function isPenciledIn(matrixCell, value) {
 }
 
 function prefillWithSampleData() {
-    document.getElementById('input-0-2').value = 2;
-    document.getElementById('input-0-4').value = 9;
-    document.getElementById('input-0-6').value = 3;
-    document.getElementById('input-1-0').value = 8;
-    document.getElementById('input-1-2').value = 1;
-    document.getElementById('input-2-0').value = 5;
+    var data = ''
+        + '4|1| |7| |5|9| | ' + "\n"
+        + ' | | | | | | | | ' + "\n"
+        + ' |7| |1|8| | | |4' + "\n"
+        + ' | |4| |7|6| | | ' + "\n"
+        + ' |6|3|9|4| | | | ' + "\n"
+        + '5| | | |3|1|4|2|6' + "\n"
+        + ' |8| |4|5|9|6|7| ' + "\n"
+        + ' | | | |1|7| |8| ' + "\n"
+        + ' | |9| |6|8| |4|3'
+    ;
 
-    document.getElementById('input-3-1').value = 9;
-    document.getElementById('input-3-4').value = 6;
-    document.getElementById('input-3-7').value = 4;
-    document.getElementById('input-4-7').value = 1;
-    document.getElementById('input-4-8').value = 8;
-    document.getElementById('input-5-8').value = 5;
+    var rowNum = 0;
+    var rows = data.split("\n");
+    rows.forEach((row) => {
+        var cols = row.split("|");
+        var colNum = 0;
+        cols.forEach((cell) => {
+            document.getElementById('input-' + rowNum + '-' + colNum).value = cell;
+            colNum++;
+        });
+        rowNum++;
+    });
 
-    document.getElementById('input-6-1').value = 7;
-    document.getElementById('input-6-6').value = 2;
-    document.getElementById('input-7-0').value = 3;
-    document.getElementById('input-7-3').value = 5;
-    document.getElementById('input-8-3').value = 1;
 }
 
 function readMatrix() {
@@ -217,11 +229,11 @@ function renderMatrix(matrix) {
                 background = 'background: #ddd';
             }
 
-            s += '<td ' ;
+            s += '<td ';
             if (matrix[row][col].value.trim() !== '') {
-                s += ' style="padding:10px; '+background+'">' + matrix[row][col].value;
+                s += ' style="padding:10px; ' + background + '">' + matrix[row][col].value;
             } else {
-                s += ' style="'+background+'"> ' + renderPossibleValues(matrix[row][col].possibleValues);
+                s += ' style="' + background + '"> ' + renderPossibleValues(matrix[row][col].possibleValues);
             }
             s += '</td>';
         }
