@@ -12,7 +12,7 @@ The possible values for each cell are checked against:
 If a possible value is unique in any of the above categories, then that is the solution for that cell.
 
 
-This solution does not support "guessing" and backtracking normally done in hard-level sudoku.
+NOTE: This solution does not support "guessing" and backtracking normally done in hard-level sudoku. There are cases where the puzzle is unsolvable by this algorithm
 
 The page will show each step of the solution. The browser console log shows the order of the numbers which are found, and their coordinate in the board.
 

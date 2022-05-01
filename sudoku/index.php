@@ -21,6 +21,7 @@
     </table>
     <br />
     <input type="button" value="Sample data" onclick="prefillWithSampleData()">
+    <input type="button" value="Sample data (Hard)" onclick="prefillWithSampleData(true)">
     <input type="button" value="Solve!" onclick="solve()">
 
 
