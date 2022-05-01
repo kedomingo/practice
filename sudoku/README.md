@@ -26,4 +26,14 @@ Files:
 Open index.html in your browser to run it
 
 
-<img width="530" alt="Screen Shot 2022-05-01 at 3 25 09 PM" src="https://user-images.githubusercontent.com/1763107/166150724-6004ed69-849a-4287-9cc9-b53291c2d8c5.png">
+Click on sample data to load a test Sudoku problem
+
+<img width="295" alt="Screen Shot 2022-05-01 at 4 54 45 PM" src="https://user-images.githubusercontent.com/1763107/166151478-7e37949b-4e9b-4ea7-bf6e-1608113ea6f3.png">
+
+
+Click on the solve button to run the program
+
+<img width="377" alt="Screen Shot 2022-05-01 at 4 54 17 PM" src="https://user-images.githubusercontent.com/1763107/166151493-4d5260d1-ff70-4496-a6c7-7c647f37e121.png">
+...
+<img width="306" alt="Screen Shot 2022-05-01 at 4 54 22 PM" src="https://user-images.githubusercontent.com/1763107/166151498-74841ddd-e84d-4d82-be40-703616f37289.png">
+
