@@ -1,5 +1,8 @@
 package sudoku;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Subgroup {
@@ -152,6 +155,30 @@ public class Subgroup {
 
     var cell = submatrix[row][col];
     cell.addPossibleValue(value);
+  }
+
+  public Set<Integer> getColumnsOfPossibleValue(int value) {
+    Set<Integer> columns = new HashSet<>();
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        if (submatrix[row][col].isPossibleValue(value)) {
+          columns.add(col);
+        }
+      }
+    }
+    return columns;
+  }
+
+  public Set<Integer> getRowsOfPossibleValue(int value) {
+    Set<Integer> rows = new HashSet<>();
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        if (submatrix[row][col].isPossibleValue(value)) {
+          rows.add(row);
+        }
+      }
+    }
+    return rows;
   }
 
   private void validateCoordinates(int row, int col) throws RuntimeException {

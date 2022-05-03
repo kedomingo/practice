@@ -23,8 +23,8 @@ public class BoardResolver {
           board.setValueAt(row, col, v);
 
           removePossibleValueFromSubgroup(board, row, col, v);
-          removePossibleValueFromRow(board, row, col, v);
-          removePossibleValueFromCol(board, row, col, v);
+          removePossibleValueFromRow(board, row, col, v, false);
+          removePossibleValueFromCol(board, row, col, v, false);
         }
       }
     }
@@ -43,14 +43,43 @@ public class BoardResolver {
             System.out.println(v + " at " + row + "," + col + " is unique in column.");
           }
 
-          if (!analyzer.isValueInSubgroup(board, row, col, v, true)
-              || !analyzer.isValueInRow(board, row, col, v, true)
+          if (!analyzer.isValueInSubgroup(board, row, col, v, true) || !analyzer.isValueInRow(board, row, col, v, true)
               || !analyzer.isValueInCol(board, row, col, v, true)) {
             board.setValueAt(row, col, v);
 
             removePossibleValueFromSubgroup(board, row, col, v);
-            removePossibleValueFromRow(board, row, col, v);
-            removePossibleValueFromCol(board, row, col, v);
+            removePossibleValueFromRow(board, row, col, v, false);
+            removePossibleValueFromCol(board, row, col, v, false);
+          }
+        }
+      }
+    }
+  }
+
+  public void resolveColumnRestriction(Board board) {
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        var subgroup = board.getSubgroupAt(row, col);
+        for (var v : board.getPossibleValuesAt(row, col)) {
+          var columnsOfPossibleValue = subgroup.getColumnsOfPossibleValue(v);
+          if (columnsOfPossibleValue.size() == 1) {
+            System.out.printf("Possible value %d at %d,%d is only used in column %d%n", v, row, col, col);
+            removePossibleValueFromCol(board, row, col, v, true);
+          }
+        }
+      }
+    }
+  }
+
+  public void resolveRowRestriction(Board board) {
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        var subgroup = board.getSubgroupAt(row, col);
+        for (var v : board.getPossibleValuesAt(row, col)) {
+          var rowsOfPossibleValue = subgroup.getRowsOfPossibleValue(v);
+          if (rowsOfPossibleValue.size() == 1) {
+            System.out.printf("Possible value %d at %d,%d is only used in row %d%n", v, row, col, row);
+            removePossibleValueFromRow(board, row, col, v, true);
           }
         }
       }
@@ -65,23 +94,31 @@ public class BoardResolver {
     subgroup.removePossibleValue(value);
   }
 
-  private void removePossibleValueFromRow(Board board, int row, int col, int value) {
+  private void removePossibleValueFromRow(Board board, int row, int col, int value, boolean skipCurrent) {
     var adjacentSubgroups = board.getHorizontallyAdjacentSubgroups(row, col);
-    for (var subgroup : adjacentSubgroups) {
-      System.out.println(
-          "Removing " + value + " from subgroup at " + subgroup.getStartRow() + "," + subgroup.getStartCol()
-              + " at row " + (row - subgroup.getStartRow()));
-      subgroup.removePossibleValueFromRow(row - subgroup.getStartRow(), value);
+    var currentSubgroup = board.getSubgroupAt(row, col);
+    for (var adjacentSubgroup : adjacentSubgroups) {
+      if (skipCurrent && (adjacentSubgroup.getStartRow() == currentSubgroup.getStartRow()
+          && adjacentSubgroup.getStartCol() == currentSubgroup.getStartCol())) {
+        continue;
+      }
+      System.out.println("Removing " + value + " from subgroup at " + adjacentSubgroup.getStartRow() + ","
+          + adjacentSubgroup.getStartCol() + " at row " + (row - adjacentSubgroup.getStartRow()));
+      adjacentSubgroup.removePossibleValueFromRow(row - adjacentSubgroup.getStartRow(), value);
     }
   }
 
-  private void removePossibleValueFromCol(Board board, int row, int col, int value) {
+  private void removePossibleValueFromCol(Board board, int row, int col, int value, boolean skipCurrent) {
     var adjacentSubgroups = board.getVerticallyAdjacentSubgroups(row, col);
-    for (var subgroup : adjacentSubgroups) {
-      System.out.println(
-          "Removing " + value + " from subgroup at " + subgroup.getStartRow() + "," + subgroup.getStartCol()
-              + " at col " + (col - subgroup.getStartCol()));
-      subgroup.removePossibleValueFromCol(col - subgroup.getStartCol(), value);
+    var currentSubgroup = board.getSubgroupAt(row, col);
+    for (var adjacentSubgroup : adjacentSubgroups) {
+      if (skipCurrent && (adjacentSubgroup.getStartRow() == currentSubgroup.getStartRow()
+          && adjacentSubgroup.getStartCol() == currentSubgroup.getStartCol())) {
+        continue;
+      }
+      System.out.println("Removing " + value + " from subgroup at " + adjacentSubgroup.getStartRow() + ","
+          + adjacentSubgroup.getStartCol() + " at col " + (col - adjacentSubgroup.getStartCol()));
+      adjacentSubgroup.removePossibleValueFromCol(col - adjacentSubgroup.getStartCol(), value);
     }
   }
 }
