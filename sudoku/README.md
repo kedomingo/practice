@@ -48,7 +48,7 @@ Solution for an "Extreme" sudoku requiring 1 guess:
 
 ![Screen Shot 2022-05-03 at 6 43 05 PM](https://user-images.githubusercontent.com/1763107/166500850-f09c524e-91ca-4491-9b2b-ac6675e4a7b7.png)
 
-Solution including to encode the numbers, and encode the solution
+Solution (my time to encode the numbers, and encode the solution is around 3 mins)
 
 ![279424830_958079951539510_4351082658686304077_n](https://user-images.githubusercontent.com/1763107/166501090-4422b02f-c3ad-4b11-92b3-12cd2712f942.jpeg)
 
