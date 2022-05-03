@@ -1,6 +1,5 @@
 package sudoku;
 
-import java.util.List;
 import java.util.Set;
 
 public class Subgroup {
@@ -22,60 +21,66 @@ public class Subgroup {
     }
   }
 
-  public boolean contains(int value) {
-    return contains(value, false);
-  }
-
-  public boolean contains(int value, boolean includePossibleValues) {
+  /**
+   * Creates a copy of the subgroup for the purpose of depth search and backtracking.
+   */
+  public Subgroup copy() {
+    var copy = new Subgroup(startRow, startCol);
     for (var row = 0; row < 3; row++) {
       for (var col = 0; col < 3; col++) {
-        var cell = submatrix[row][col];
-        if (cell == null) {
-          throw new RuntimeException("Cell at " + row + ", " + col + " is null");
-        }
-        if (includePossibleValues && cell.isInCell(value)) {
-          return true;
-        }
-        if (cell.getValue() != null && cell.getValue() == value) {
-          return true;
-        }
+        copy.submatrix[row][col] = submatrix[row][col].copy();
       }
     }
-    return false;
+
+    return copy;
   }
 
-  public boolean isValueInCol(int col, int value) {
-    return isValueInCol(col, value, false);
+  public boolean contains(int value) {
+    return contains(-1, -1, value, false);
   }
 
-  public boolean isValueInCol(int col, int value, boolean includePossibleValues) {
+  public boolean contains(int exceptRow, int exceptCol, int value, boolean includePossibleValues) {
+    if (includePossibleValues && value == 3) {
+      var a = "breakpoint";
+    }
     for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        if (exceptRow >= 0 && row == exceptRow && exceptCol >= 0 && exceptCol == col) {
+          continue;
+        }
+        var cell = submatrix[row][col];
+        if (cell.isInCell(value, includePossibleValues)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean isValueInCol(int exceptRow, int col, int value, boolean includePossibleValues) {
+    for (var row = 0; row < 3; row++) {
+      if (exceptRow >= 0 && row == exceptRow) {
+        continue;
+      }
       var cell = submatrix[row][col];
-      if ((cell.getValue() != null && cell.getValue() == value) || (includePossibleValues && cell.isInCell(value))) {
+      if ((cell.getValue() != null && cell.getValue() == value) || cell.isInCell(value, includePossibleValues)) {
         return true;
       }
     }
     return false;
   }
 
-  public boolean isValueInRow(int row, int value) {
-    return isValueInRow(row, value, false);
-  }
-
-  public boolean isValueInRow(int row, int value, boolean includePossibleValues) {
+  public boolean isValueInRow(int row, int exceptCol, int value, boolean includePossibleValues) {
     for (var col = 0; col < 3; col++) {
+      if (exceptCol >= 0 && col == exceptCol) {
+        continue;
+      }
       var cell = submatrix[row][col];
-      if ((cell.getValue() != null && cell.getValue() == value) || (includePossibleValues && cell.isInCell(value))) {
+      if ((cell.getValue() != null && cell.getValue() == value) || cell.isInCell(value, includePossibleValues)) {
         return true;
       }
     }
     return false;
-  }
-
-  public void setCellAt(int row, int col, Cell cell) throws RuntimeException {
-    validateCoordinates(row, col);
-
-    submatrix[row][col] = cell;
   }
 
   public void setValueAt(int row, int col, int value) throws RuntimeException {
@@ -99,6 +104,42 @@ public class Subgroup {
     return cell.getPossibleValues();
   }
 
+  public void removePossibleValueAt(int row, int col, int value) throws RuntimeException {
+    validateCoordinates(row, col);
+
+    var cell = submatrix[row][col];
+    cell.removePossibleValue(value);
+  }
+
+  /**
+   * Removes the possible value from all cells in the subgroup.
+   */
+  public void removePossibleValue(int value) {
+    removePossibleValue(-1, -1, value);
+  }
+
+  public void removePossibleValueFromRow(int row, int value) {
+    removePossibleValue(row, -1, value);
+  }
+
+  public void removePossibleValueFromCol(int col, int value) {
+    removePossibleValue(-1, col, value);
+  }
+
+  public void removePossibleValue(int onlyInRow, int onlyInCol, int value) {
+    for (var row = 0; row < 3; row++) {
+      if (onlyInRow >= 0 && row != onlyInRow) {
+        continue;
+      }
+      for (var col = 0; col < 3; col++) {
+        if (onlyInCol >= 0 && col != onlyInCol) {
+          continue;
+        }
+        submatrix[row][col].removePossibleValue(value);
+      }
+    }
+  }
+
   public boolean isPossibleValueAt(int row, int col, int value) throws RuntimeException {
     validateCoordinates(row, col);
 
@@ -111,12 +152,6 @@ public class Subgroup {
 
     var cell = submatrix[row][col];
     cell.addPossibleValue(value);
-  }
-
-  public Cell getCellAt(int row, int col) throws RuntimeException {
-    validateCoordinates(row, col);
-
-    return submatrix[row][col];
   }
 
   private void validateCoordinates(int row, int col) throws RuntimeException {
@@ -134,5 +169,15 @@ public class Subgroup {
 
   public int getStartCol() {
     return startCol;
+  }
+
+  public String toString() {
+    String s = "";
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        s += submatrix[row][col].toString() + "-";
+      }
+    }
+    return s;
   }
 }

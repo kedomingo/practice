@@ -17,53 +17,18 @@ public class Board {
     }
   }
 
-  public void initializeBoardWithPossibleValues() {
-    for (var row = 0; row < 9; row++) {
-      for (var col = 0; col < 9; col++) {
-        if (row == 0 && col == 4) {
-          var i = 1;
-        }
-        var subgroup = getSubgroupAt(row, col);
-        var subgroupRow = row - subgroup.getStartRow();
-        var subgroupCol = col - subgroup.getStartCol();
-        var value = subgroup.getValueAt(subgroupRow, subgroupCol);
-        if (value == null) {
-          for (var v = 1; v <= 9; v++) {
-            if (!subgroup.contains(v) && !isValueInRow(row, v) && !isValueInCol(col, v)) {
-              subgroup.addPossibleValueAt(subgroupRow, subgroupCol, v);
-            }
-          }
-        }
+  /**
+   * Creates a copy of the board for the purpose of depth search and backtracking
+   */
+  public Board copy() {
+    var copy = new Board();
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        copy.subgroups[row][col] = subgroups[row][col].copy();
       }
     }
-  }
 
-  public boolean isValueInRow(int row, int value) {
-    return isValueInRow(row, value, false);
-  }
-
-  public boolean isValueInRow(int row, int value, boolean includePossibleValues) {
-    var adjacentGroups = getHorizontallyAdjacentSubgroups(row, 0);
-    for (var subgroup : adjacentGroups) {
-      if (subgroup.isValueInRow(row - subgroup.getStartRow(), value, includePossibleValues)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public boolean isValueInCol(int col, int value) {
-    return isValueInCol(col, value, false);
-  }
-
-  public boolean isValueInCol(int col, int value, boolean includePossibleValues) {
-    var adjacentGroups = getVerticallyAdjacentSubgroups(0, col);
-    for (var subgroup : adjacentGroups) {
-      if (subgroup.isValueInCol(col - subgroup.getStartCol(), value, includePossibleValues)) {
-        return true;
-      }
-    }
-    return false;
+    return copy;
   }
 
   /**
@@ -132,6 +97,14 @@ public class Board {
     return subgroup.getPossibleValuesAt(subgroupRow, subgroupCol);
   }
 
+  public void removePossibleValueAt(int row, int col, int value) {
+    var subgroup = getSubgroupAt(row, col);
+    var subgroupRow = row - subgroup.getStartRow();
+    var subgroupCol = col - subgroup.getStartCol();
+
+    subgroup.removePossibleValueAt(subgroupRow, subgroupCol, value);
+  }
+
   private void validateCoordinaates(int row, int col) {
     if (row < 0 || row > 8) {
       throw new RuntimeException("Invalid value for row: " + row);
@@ -139,5 +112,15 @@ public class Board {
     if (col < 0 || col > 8) {
       throw new RuntimeException("Invalid value for row: " + row);
     }
+  }
+
+  public String toString() {
+    String s = "";
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        s += subgroups[row][col].toString() + "/";
+      }
+    }
+    return s;
   }
 }

@@ -21,6 +21,8 @@ public class Cell {
 
   public void setValue(Integer value) {
     this.value = value;
+    // Setting the final value should clear the possible Values
+    possibleValues = new HashSet<>();
   }
 
   public void addPossibleValue(Integer value) {
@@ -32,10 +34,32 @@ public class Cell {
   }
 
   public Set<Integer> getPossibleValues() {
-    return possibleValues;
+    // Always return a copy because this is used in a loop.
+    // If we use the same object, the JVM complains when we remove from this set while we are iterating through it
+    return new HashSet<>(possibleValues);
   }
 
-  public boolean isInCell(int value) {
-    return this.value == value || isPossibleValue(value);
+  public void removePossibleValue(int value) {
+    possibleValues.remove(value);
+  }
+
+  public boolean isInCell(int value, boolean includePossibleValues) {
+    return (this.value != null && this.value == value) || (includePossibleValues && isPossibleValue(value));
+  }
+
+  public Cell copy() {
+    var copy = new Cell();
+    copy.value = value;
+    copy.possibleValues = new HashSet<>(possibleValues);
+
+    return copy;
+  }
+
+  public String toString() {
+    if (value != null) {
+      return String.valueOf(value);
+    }
+
+    return possibleValues.toString();
   }
 }
