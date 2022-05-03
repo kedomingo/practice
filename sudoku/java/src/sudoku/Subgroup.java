@@ -181,6 +181,17 @@ public class Subgroup {
     return rows;
   }
 
+  public boolean isSolved() {
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        if (submatrix[row][col].getValue() == null) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   private void validateCoordinates(int row, int col) throws RuntimeException {
     if (row < 0 || row > 2) {
       throw new RuntimeException("Invalid value for row: " + row);

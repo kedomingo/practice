@@ -4,7 +4,8 @@ import sudoku.Board;
 
 public class SudokuSolver {
 
-  private final int RUN_LIMIT = 10;
+  private final int RUN_LIMIT = 1000;
+  private static int iterationCount = 1;
 
   private BoardResolver resolver;
   private HtmlBoardRenderer outputRenderer;
@@ -31,11 +32,8 @@ public class SudokuSolver {
    *    or horizontal subgroups (respectively) cannot use that possible value in the same column or row
    */
   public void solve(Board board) {
-    solve(board, 1);
-  }
-
-  public void solve(Board board, int iterationCount) {
-    if (iterationCount > RUN_LIMIT) {
+    if (SudokuSolver.iterationCount > RUN_LIMIT) {
+      System.out.println("Limit of " + RUN_LIMIT + " is reached. Stopping");
       return;
     }
 
@@ -62,10 +60,39 @@ public class SudokuSolver {
 
     // No change in the board
     if (last.equals(current)) {
+      System.out.println("Sudoku is " +(board.isSolved() ? "solved" : "not solved"));
       return;
     }
 
-    solve(board, iterationCount + 1);
+    SudokuSolver.iterationCount++;
+    solve(board);
+  }
+
+  /**
+   * This is only one level of brute force. Multiple guesses might be neccessary for very hard sudokus.
+   * It is not implemented here
+   */
+  public void findSolutions(Board board) {
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        if (board.getValueAt(row, col) == null) {
+          var copy = board.copy();
+          for (var v :board.getPossibleValuesAt(row, col)) {
+            System.out.println("Trying " + v + " for " + row + "," + col + "...");
+            copy.setValueAt(row, col, v);
+            solve(copy);
+            if (copy.isSolved()) {
+              System.out.println(v + " for " + row + "," + col + " worked!");
+              board = copy;
+              return;
+            }
+            else {
+              System.out.println(v + " for " + row + "," + col + " did not work.");
+            }
+          }
+        }
+      }
+    }
   }
 
   public String getOutputHtml() {

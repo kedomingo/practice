@@ -31,6 +31,11 @@ public class Sudoku {
     boardInitializer.initializeBoardWithPossibleValues(board);
     solver.solve(board);
 
+    if (!board.isSolved()) {
+      System.out.println("Trying backtracking...");
+      solver.findSolutions(board);
+    }
+
     var contents = "<h3>Initial Values</h3>" + renderer.renderBoard(board) + "<hr />";
     contents += solver.getOutputHtml();
 

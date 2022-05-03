@@ -114,6 +114,17 @@ public class Board {
     }
   }
 
+  public boolean isSolved() {
+    for (var row = 0; row < 3; row++) {
+      for (var col = 0; col < 3; col++) {
+        if (!subgroups[row][col].isSolved()) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   public String toString() {
     String s = "";
     for (var row = 0; row < 3; row++) {
